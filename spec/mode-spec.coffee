@@ -8,18 +8,18 @@ describe 'Mode', ->
       expect(test_mode.tag).toBe ''
       expect(test_mode.message).toBe ''
       expect(test_mode.cursor).toBe '.block'
-      expect(test_mode.entry_hook).toEqual []
-      expect(test_mode.exit_hook).toEqual []
-      expect(test_mode.enable).toEqual []
+      expect(test_mode.entry_hook).toEqual(new Set)
+      expect(test_mode.exit_hook).toEqual(new Set)
+      expect(test_mode.enable).toEqual(new Set)
 
     it 'creates a new mode with parameters', ->
       test_mode = new Mode('T', 'Test Mode Activated', '.bar')
       expect(test_mode.tag).toBe 'T'
       expect(test_mode.message).toBe 'Test Mode Activated'
       expect(test_mode.cursor).toBe '.bar'
-      expect(test_mode.entry_hook).toEqual []
-      expect(test_mode.exit_hook).toEqual []
-      expect(test_mode.enable).toEqual []
+      expect(test_mode.entry_hook).toEqual(new Set)
+      expect(test_mode.exit_hook).toEqual(new Set)
+      expect(test_mode.enable).toEqual(new Set)
 
 
   describe 'when a hook is added', ->
@@ -31,15 +31,16 @@ describe 'Mode', ->
       test_mode = new Mode('T', 'Test Mode Activated', '.bar')
       a_global = 0
 
-    it 'as entry hooks, the hooks are stored', ->
+    it 'as entry hook, the hooks is stored', ->
       hk = -> 1
       test_mode.add_entry_hook hk
-      expect(test_mode.entry_hook[0]).toBe hk
+      expect(test_mode.entry_hook.has(hk)).toBeTruthy()
       m_hk = []
       m_hk.push -> 1
       m_hk.push -> 2
       test_mode.add_all_entry_hook m_hk
-      expect(test_mode.entry_hook.length).toBe 3
+      expect(test_mode.entry_hook.has(m_hk[0])).toBeTruthy()
+      expect(test_mode.entry_hook.has(m_hk[1])).toBeTruthy()
 
 
     it 'is called when the mode is activated', ->
@@ -54,12 +55,13 @@ describe 'Mode', ->
     it 'as exit hooks, the hooks are stored', ->
       hk = -> 1
       test_mode.add_exit_hook hk
-      expect(test_mode.exit_hook[0]).toBe hk
+      expect(test_mode.exit_hook.has(hk)).toBeTruthy()
       m_hk = []
       m_hk.push -> 1
       m_hk.push -> 2
       test_mode.add_all_exit_hook m_hk
-      expect(test_mode.exit_hook.length).toBe 3
+      expect(test_mode.exit_hook.has(m_hk[0])).toBeTruthy()
+      expect(test_mode.exit_hook.has(m_hk[1])).toBeTruthy()
 
 
     it 'is called when the mode is deactivated', ->
@@ -118,8 +120,8 @@ describe 'Mode', ->
 
       it 'is included in enable modes', ->
         test_mode.add_enable slave_mode
-        expect(test_mode.enable[0]).toEqual slave_mode
-
+        expect(test_mode.enable.has(slave_mode)).toBeTruthy()
+        
       it 'invokes the activate method on activation mode', ->
         f = jasmine.createSpy('activation_mode method')
         slave_mode.activate_mode = f

@@ -58,25 +58,29 @@ module.exports =
     enable:     null
 
     constructor: (@tag='', @message='', @cursor='.block') ->
-      @entry_hook ?= []
-      @exit_hook  ?= []
-      @enable     ?= []
+      @entry_hook = new Set
+      @exit_hook  = new Set
+      @enable     = new Set
 
     activate_mode: (editor) ->
       @activate(editor) if @activate?
-      extra_behavior.call(this) for extra_behavior in @entry_hook
-      extra_mode.activate_mode(editor) for extra_mode in @enable
+      @entry_hook.forEach (hook) => hook.call(this)
+      @enable.forEach (extra) => extra.activate_mode(editor)
+      #extra_behavior.call(this) for extra_behavior in @entry_hook
+      #extra_mode.activate_mode(editor) for extra_mode in @enable
 
     deactivate_mode: (editor) ->
       @deactivate(editor) if @deactivate?
-      extra_behavior.call(this) for extra_behavior in @exit_hook
-      extra_mode.deactivate_mode(editor) for extra_mode in @enable
+      @exit_hook.forEach (hook) => hook.call(this)
+      @enable.forEach (extra) => extra.deactivate_mode(editor)
+      #extra_behavior.call(this) for extra_behavior in @exit_hook
+      #extra_mode.deactivate_mode(editor) for extra_mode in @enable
 
     add_entry_hook: (f) ->
-      @entry_hook.push f
+      @entry_hook.add f
 
     add_exit_hook: (f) ->
-      @exit_hook.push f
+      @exit_hook.add f
 
     add_all_entry_hook: (fs) ->
       for i in fs
@@ -88,7 +92,7 @@ module.exports =
         @add_exit_hook i
 
     add_enable: (f) ->
-      @enable.push f
+      @enable.add f
 
     add_all_enable: (fs) ->
       for i in fs
