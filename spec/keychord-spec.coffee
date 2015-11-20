@@ -11,7 +11,7 @@ describe "Keychord", ->
   beforeEach ->
     workspaceElement = atom.views.getView(atom.workspace)
     activationPromise = atom.packages.activatePackage('keychord')
-
+###
   describe "when the keychord:toggle event is triggered", ->
     it "hides and shows the modal panel", ->
       # Before the activation event the view is not on the DOM, and no panel
@@ -60,3 +60,4 @@ describe "Keychord", ->
         expect(keychordElement).toBeVisible()
         atom.commands.dispatch workspaceElement, 'keychord:toggle'
         expect(keychordElement).not.toBeVisible()
+###
