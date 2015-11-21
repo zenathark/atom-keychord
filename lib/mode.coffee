@@ -56,13 +56,16 @@ module.exports =
     entry_hook: null
     exit_hook:  null
     enable:     null
+    selector:   null
 
-    constructor: (@tag='', @message='', @cursor='.block') ->
+    constructor: (@selector, @tag='', @message='', @cursor='.block') ->
       @entry_hook = new Set
       @exit_hook  = new Set
       @enable     = new Set
 
     activate_mode: (editor) ->
+      editor_view = atom.views.getView(editor)
+      editor_view.classList.add @selector
       @activate(editor) if @activate?
       @entry_hook.forEach (hook) => hook.call(this)
       @enable.forEach (extra) => extra.activate_mode(editor)
@@ -70,6 +73,8 @@ module.exports =
       #extra_mode.activate_mode(editor) for extra_mode in @enable
 
     deactivate_mode: (editor) ->
+      editor_view = atom.views.getView(editor)
+      editor_view.classList.remove @selector
       @deactivate(editor) if @deactivate?
       @exit_hook.forEach (hook) => hook.call(this)
       @enable.forEach (extra) => extra.deactivate_mode(editor)

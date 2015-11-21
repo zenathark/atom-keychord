@@ -8,29 +8,32 @@
 # Each editor on wicked-mode has its own mode manager. This file Contains
 # the definition of the base mode manager.
 
-module.export =
+module.exports =
   class ModeManager
     states: null
     editor: null
+    editor_view: null
 
-  constructor: (@editor) ->
-    @states = new Set
+    constructor: (@editor) ->
+      @states = new Set
+      @editor_view = atom.views.getView(@editor)
 
-  add_mode: (new_mode) ->
-    @states.add new_mode
+    add_mode: (new_mode) ->
+      @states.add new_mode
 
-  remove_mode: (mode) ->
-    @states.delete mode
 
-  activate_mode: (new_mode) ->
-    new_mode.activate_mode()
-    @add_mode new_mode
+    remove_mode: (mode) ->
+      @states.delete mode
 
-  deactivate_mode: (mode) ->
-    mode.deactivate_mode()
+    activate_mode: (new_mode) ->
+      new_mode.activate_mode @editor
+      @add_mode new_mode
 
-  activate: ->
-    @states.forEach (state) -> state.activate_mode()
+    deactivate_mode: (mode) ->
+      mode.deactivate_mode @editor
 
-  deactivate: ->
-    @states.forEach (state) -> state.deactivate_mode()
+    activate: ->
+      @states.forEach (state) -> state.activate_mode()
+
+    deactivate: ->
+      @states.forEach (state) -> state.deactivate_mode()
