@@ -13,41 +13,43 @@ log = require('./logger') name
 
 module.exports =
   class ModeManager
-    states: null
-    editor: null
-    editor_view: null
+    minor_modes:  null
+    editor:       null
+    editor_view:  null
+    major_mode:   null
 
     constructor: (@editor) ->
       log "mode manager instantiated with #{@editor}"
-      @states = new Set
+      @minor_modes = new Set
       @editor_view = atom.views.getView(@editor)
 
-    add_mode: (new_mode) ->
+    addMode: (new_mode) ->
       log "added new mode #{new_mode}"
-      @states.add new_mode
+      @minor_modes.add new_mode
 
-    remove_mode: (mode) ->
+    removeMode: (mode) ->
       log "removed mode #{mode}"
-      @states.delete mode
+      @minor_modes.delete mode
 
-    activate_mode: (new_mode) ->
+    activateMode: (new_mode) ->
       log "activate mode #{new_mode}"
-      new_mode.activate_mode @editor
-      @add_mode new_mode
+      new_mode.activateMode @editor
+      @addMode new_mode
 
-    deactivate_mode: (mode) ->
+    deactivateMode: (mode) ->
       log "deactivate mode #{mode}"
-      mode.deactivate_mode @editor
+      mode.deactivateMode @editor
 
-    switch_mode: (mode) ->
+    switchMode: (mode) ->
       log "switching to mode #{mode}"
-      @deactivate()
-      @activate_mode mode
+      @major_mode?.deactivateMode @editor
+      @major_mode = mode
+      @major_mode.activateMode @editor
 
     activate: ->
       log "Activating all modes"
-      @states.forEach (state) => state.activate_mode @editor
+      @minor_modes.forEach (state) => state.activateMode @editor
 
     deactivate: ->
       log "Deactivating all modes"
-      @states.forEach (state) => state.deactivate_mode @editor
+      @minor_modes.forEach (state) => state.deactivateMode @editor

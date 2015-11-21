@@ -11,44 +11,44 @@ describe 'ModeManager', ->
       atom.workspace.open()
 
     runs ->
-        editor = atom.workspace.getActiveTextEditor()
+      editor = atom.workspace.getActiveTextEditor()
 
   describe 'when a ModeManager is added to an editor', ->
 
     it 'should add the mode to te view', ->
       mm = new ModeManager editor
-      mm.activate_mode NORMAL
+      mm.activateMode NORMAL
       editor_view = atom.views.getView(editor)
       expect('wicked-normal' in editor_view.classList).toBeTruthy()
 
     it 'should add the mode to the ModeManager list', ->
       mm = new ModeManager editor
-      mm.add_mode NORMAL
-      expect(mm.states.has(NORMAL)).toBeTruthy()
+      mm.addMode NORMAL
+      expect(mm.minor_modes.has(NORMAL)).toBeTruthy()
 
     it 'should add a mode when change from empty state', ->
       mm = new ModeManager editor
-      mm.switch_mode NORMAL
-      expect(mm.states.has(NORMAL)).toBeTruthy()
+      mm.switchMode NORMAL
+      expect(mm.major_mode).toBe NORMAL
 
     it 'should deactivate old mode and activate a new one', ->
       mm = new ModeManager editor
-      mm.switch_mode NORMAL
-      mm.switch_mode INSERT
-      expect(mm.states.has(INSERT)).toBeTruthy()
+      mm.switchMode NORMAL
+      mm.switchMode INSERT
+      expect(mm.major_mode).toBe INSERT
 
   describe 'when a ModeManager is removed from an editor', ->
     mm = null
 
     beforeEach ->
       mm = new ModeManager editor
-      mm.add_mode NORMAL
+      mm.addMode NORMAL
 
     it 'should remove the mode from the view', ->
-      mm.remove_mode NORMAL
+      mm.removeMode NORMAL
       editor_view = atom.views.getView(editor)
       expect('wicked-normal' in editor_view.classList).not.toBeTruthy()
 
     it 'should remove the mode from the ModeManager', ->
-      mm.remove_mode NORMAL
-      expect(mm.states.has(NORMAL)).not.toBeTruthy()
+      mm.removeMode NORMAL
+      expect(mm.minor_modes.has(NORMAL)).not.toBeTruthy()

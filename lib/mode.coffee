@@ -35,27 +35,27 @@ module.exports =
   #   * `enable` Modes to enable when mode is enable
   #
   # Methods:
-  #   * `activate_mode` Activate this mode
-  #   * `deactivate_mode` Deactivate this mode
+  #   * `activateMode` Activate this mode
+  #   * `deactivateMode` Deactivate this mode
   #   * `activate` If presents, the method is invoked when activating
   #     mode
   #   * `deactivate` If presents, the method is invoked when
   #     deactivating mode
-  #   * `add_entry_hook` Adds a function to the entry hooks
-  #   * `add_exit_hook` Adds a function to the exit hooks
-  #   * `add_all_entry_hook` Adds a list of functions to the entry hook
-  #   * `add_all_exit_hook` Adds a list of functions to the exit hook
-  #   * `add_enable` Adds a mode to enable
-  #   * `add_all_enable` Adds a list of modes to enable
+  #   * `addEntryHook` Adds a function to the entry hooks
+  #   * `addExitHook` Adds a function to the exit hooks
+  #   * `addAllEntryHooks` Adds a list of functions to the entry hook
+  #   * `addAllExitHooks` Adds a list of functions to the exit hook
+  #   * `addEnable` Adds a mode to enable
+  #   * `addAllEnable` Adds a list of modes to enable
   #
   #
-  # When mode is activate through `activate_mode`, all functions in
+  # When mode is activate through `activateMode`, all functions in
   # entry-hook are invoked. Also, each mode listed in `enable` is also
   # activated in order.
   # Because each mode in `enable` is activated before this mode, any
   # changes made by the extra mode in `enable` can be potentially overwrited
   # by this mode.
-  # When mode is deactivate through `deactivate_mode`, all functions in
+  # When mode is deactivate through `deactivateMode`, all functions in
   # exit-hook are invoked and all modes in `enable` are deactivated in
   # order.
   class Mode
@@ -72,44 +72,40 @@ module.exports =
       @exit_hook  = new Set
       @enable     = new Set
 
-    activate_mode: (editor) ->
+    activateMode: (editor) ->
       log "Activate called"
       assert.ok(editor, 'editor is empty')
       editor_view = atom.views.getView editor
       editor_view.classList.add @selector
       @activate editor if @activate?
       @entry_hook.forEach (hook) => hook.call this
-      @enable.forEach (extra) => extra.activate_mode editor
+      @enable.forEach (extra) -> extra.activateMode editor
 
-    deactivate_mode: (editor) ->
+    deactivateMode: (editor) ->
       log "Activate called"
       assert.ok(editor, 'editor is empty')
       editor_view = atom.views.getView(editor)
       editor_view.classList.remove @selector
       @deactivate editor if @deactivate?
       @exit_hook.forEach (hook) => hook.call this
-      @enable.forEach (extra) => extra.deactivate_mode editor
+      @enable.forEach (extra) -> extra.deactivateMode editor
 
-    add_entry_hook: (f) ->
+    addEntryHook: (f) ->
       log "Added entry hook #{f}"
       @entry_hook.add f
 
-    add_exit_hook: (f) ->
+    addExitHook: (f) ->
       log "Added exit hook #{f}"
       @exit_hook.add f
 
-    add_all_entry_hook: (fs) ->
+    addAllEntryHooks: (fs) ->
       log " Added multiple entry hooks #{fs}"
-      fs.forEach (i) => @add_entry_hook i
+      fs.forEach (i) => @addEntryHook i
 
-    add_all_exit_hook: (fs) ->
+    addAllExitHooks: (fs) ->
       log "Added multiple exit hooks #{fs}"
-      fs.forEach (i) => @add_exit_hook i
+      fs.forEach (i) => @addExitHook i
 
-    add_enable: (f) ->
+    addEnable: (f) ->
       log "Added mode #{f} to extra enable modes"
       @enable.add f
-
-    add_all_enable: (fs) ->
-      log "Added multiple modes #{f} to enable mode"
-      fs.forEach (i) => @add_enable i
