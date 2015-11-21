@@ -10,6 +10,15 @@
 # Also, keybindings must be defined for each mode.
 
 _ = require 'underscore-plus'
+name = 'wicked:mode'
+log = require('./logger') name
+assert = require('chai').assert
+# localStorage.debug = '*'
+  # debug = require('debug')
+  # debug.disable('test')
+  # log = debug('test')
+  # log.log = console.error.bind(console)
+
 
 module.exports =
   # Base class for modes
@@ -64,41 +73,43 @@ module.exports =
       @enable     = new Set
 
     activate_mode: (editor) ->
-      editor_view = atom.views.getView(editor)
+      log "Activate called"
+      assert.ok(editor, 'editor is empty')
+      editor_view = atom.views.getView editor
       editor_view.classList.add @selector
-      @activate(editor) if @activate?
-      @entry_hook.forEach (hook) => hook.call(this)
-      @enable.forEach (extra) => extra.activate_mode(editor)
-      #extra_behavior.call(this) for extra_behavior in @entry_hook
-      #extra_mode.activate_mode(editor) for extra_mode in @enable
+      @activate editor if @activate?
+      @entry_hook.forEach (hook) => hook.call this
+      @enable.forEach (extra) => extra.activate_mode editor
 
     deactivate_mode: (editor) ->
+      log "Activate called"
+      assert.ok(editor, 'editor is empty')
       editor_view = atom.views.getView(editor)
       editor_view.classList.remove @selector
-      @deactivate(editor) if @deactivate?
-      @exit_hook.forEach (hook) => hook.call(this)
-      @enable.forEach (extra) => extra.deactivate_mode(editor)
-      #extra_behavior.call(this) for extra_behavior in @exit_hook
-      #extra_mode.deactivate_mode(editor) for extra_mode in @enable
+      @deactivate editor if @deactivate?
+      @exit_hook.forEach (hook) => hook.call this
+      @enable.forEach (extra) => extra.deactivate_mode editor
 
     add_entry_hook: (f) ->
+      log "Added entry hook #{f}"
       @entry_hook.add f
 
     add_exit_hook: (f) ->
+      log "Added exit hook #{f}"
       @exit_hook.add f
 
     add_all_entry_hook: (fs) ->
-      for i in fs
-        @add_entry_hook i
-
+      log " Added multiple entry hooks #{fs}"
+      fs.forEach (i) => @add_entry_hook i
 
     add_all_exit_hook: (fs) ->
-      for i in fs
-        @add_exit_hook i
+      log "Added multiple exit hooks #{fs}"
+      fs.forEach (i) => @add_exit_hook i
 
     add_enable: (f) ->
+      log "Added mode #{f} to extra enable modes"
       @enable.add f
 
     add_all_enable: (fs) ->
-      for i in fs
-        @add_enable i
+      log "Added multiple modes #{f} to enable mode"
+      fs.forEach (i) => @add_enable i

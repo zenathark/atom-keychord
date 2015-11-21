@@ -26,8 +26,18 @@ describe 'ModeManager', ->
       mm.add_mode NORMAL
       expect(mm.states.has(NORMAL)).toBeTruthy()
 
-  describe 'when a ModeManager is removed from an editor', ->
+    it 'should add a mode when change from empty state', ->
+      mm = new ModeManager editor
+      mm.switch_mode NORMAL
+      expect(mm.states.has(NORMAL)).toBeTruthy()
 
+    it 'should deactivate old mode and activate a new one', ->
+      mm = new ModeManager editor
+      mm.switch_mode NORMAL
+      mm.switch_mode INSERT
+      expect(mm.states.has(INSERT)).toBeTruthy()
+
+  describe 'when a ModeManager is removed from an editor', ->
     mm = null
 
     beforeEach ->
