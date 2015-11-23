@@ -1,6 +1,6 @@
 {CompositeDisposable} = require 'atom'
 
-module.exports = Keychord =
+module.exports = WickedMode =
   keychordView: null
   modalPanel: null
   subscriptions: null
@@ -14,7 +14,7 @@ module.exports = Keychord =
 
     # Register command that toggles this view
     @subscriptions.add atom.commands.add 'atom-workspace',
-                                         'keychord:toggle': => @toggle()
+                                         'wicked-mode:toggle': => @toggle()
     window.addEventListener('core:move-up',
                             (event) => console.log('up', event))
 

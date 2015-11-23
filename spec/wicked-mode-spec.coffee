@@ -1,16 +1,16 @@
-Keychord = require '../lib/keychord'
+Keychord = require '../lib/wicked-mode'
 
 # Use the command `window:run-package-specs` (cmd-alt-ctrl-p) to run specs.
 #
 # To run a specific `it` or `describe` block add an `f` to the front (e.g. `fit`
 # or `fdescribe`). Remove the `f` to unfocus the block.
 
-describe "Keychord", ->
+describe "Wicked Mode", ->
   [workspaceElement, activationPromise] = []
 
   beforeEach ->
     workspaceElement = atom.views.getView(atom.workspace)
-    activationPromise = atom.packages.activatePackage('keychord')
+    activationPromise = atom.packages.activatePackage('wicked-mode')
 ###
   describe "when the keychord:toggle event is triggered", ->
     it "hides and shows the modal panel", ->

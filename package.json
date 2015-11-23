@@ -1,14 +1,14 @@
 {
-  "name": "keychord",
-  "main": "./lib/keychord",
-  "version": "0.0.0",
-  "description": "A short description of your package",
+  "name": "wicked-mode",
+  "main": "./lib/wicked-mode",
+  "version": "0.0.1",
+  "description": "This package implements a multi modal environment in atom inspired in evil mode",
   "keywords": [
   ],
   "activationCommands": {
-    "atom-workspace": "keychord:toggle"
+    "atom-workspace": "wicked-mode:toggle"
   },
-  "repository": "https://github.com/atom/keychord",
+  "repository": "https://github.com/atom/wicked-mode",
   "license": "MIT",
   "engines": {
     "atom": ">=1.0.0 <2.0.0"
